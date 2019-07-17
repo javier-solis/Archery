@@ -1,63 +1,76 @@
+print("Program Opened")
+
 #imports
 import pygame
+from pygame.locals import *
+
 import time
 import spidev
 import math
 
-#Calculating Incline Angle
+#Accelerometer stuff
 spi = spidev.SpiDev()
 spi.open(0,0)
 spi.max_speed_hz = 2000000
- 
 
+#drawing variables
+SCREENHEIGHT = 1000
+SCREENWIDTH= 1000
+arrow_posx = 0
+arrow_posy = SCREENHEIGHT
+
+
+#defines angle
 def readChannel(channel):
     adc = spi.xfer2([1,(8+channel)<<4,0])
     data = ((adc[1]&3) << 8) + adc[2]
     return 3.3*data/1024
 
-#Notes: readChannel(0) is for x-axis, readChannel(1) is for y-axis, and readChannel(2) is for z-axis
-while True:
-  def angle():
-    return atan(readChannel(1)/readChannel(0))
+#arrow flying 
+def drawArrow(coordinates):
+    ArrowRect = pygame.Rect(arrow_posx,arrow_posy,30,10)
 
-#Simulating arrow 
-arrow_posx = 0
-arrow_posy = SCREENHEIGHT
-arrowimg = 'arrow.png'
-arrow = pygame.image.load(arrowimg).convert_alpha()
-x, y = 150, 353
-MOVE_RIGHT = 1
-MOVE_LEFT = 2
-direction = 0
 
-         
-    if(direction == MOVE_LEFT):
-        x-=0.05
-    elif(direction == MOVE_RIGHT):
-        x+=0.05
-     
-    screen.blit(player, (x, y))
-    pygame.display.update() 
+
+
+
+#simulator turning on
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
+screen.blit(player, (x, y))
+pygame.display.update() 
  
 
 background_colour = (255,255,255)
-(width, height) = (1000, 1000)
-screen = pygame.display.set_mode((width, height))
+
 pygame.display.set_caption('Archery')
 screen.fill(background_colour)
 pygame.display.flip()
 
 
 
+
 running = True
 while running:
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      running = False
-      
-def terminate():
-    pygame.quit()
+    #calculating angle 
+    def angle():
+        return math.atan(readChannel(1)/readChannel(0))
+    print(angle()*(180/math.pi))
+    
+    #letting simulator run
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    coordinates[0]+=1
+    coordinates[0]+=1
+    drawArrow()
+    
+    arrow_posx+= 1
 
-
-terminate()
-
+    
+from sys import exit
+while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
