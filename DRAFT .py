@@ -23,7 +23,22 @@ while True:
 #Simulating arrow 
 arrow_posx = 0
 arrow_posy = SCREENHEIGHT
+arrowimg = 'arrow.png'
+arrow = pygame.image.load(arrowimg).convert_alpha()
+x, y = 150, 353
+MOVE_RIGHT = 1
+MOVE_LEFT = 2
+direction = 0
 
+         
+    if(direction == MOVE_LEFT):
+        x-=0.05
+    elif(direction == MOVE_RIGHT):
+        x+=0.05
+     
+    screen.blit(player, (x, y))
+    pygame.display.update() 
+ 
 
 background_colour = (255,255,255)
 (width, height) = (1000, 1000)
